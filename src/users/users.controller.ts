@@ -11,7 +11,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { UUID } from 'src/types';
-import { UUIDParam } from 'src/decorators/uuid-param';
+import { UUIDParam } from 'src/decorators';
 
 @Controller('user')
 export class UsersController {

@@ -10,7 +10,7 @@ import {
 import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import { UUIDParam } from 'src/decorators/uuid-param';
+import { UUIDParam } from 'src/decorators';
 import { UUID } from 'src/types';
 
 @Controller('track')

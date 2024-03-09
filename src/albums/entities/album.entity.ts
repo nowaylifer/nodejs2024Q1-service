@@ -8,8 +8,10 @@ export class Album {
   year: number;
   artistId: UUID | null;
 
-  constructor(dto: CreateAlbumDto) {
+  constructor({ name, year, artistId = null }: CreateAlbumDto) {
     this.id = uuid();
-    Object.assign(this, dto);
+    this.name = name;
+    this.year = year;
+    this.artistId = artistId;
   }
 }

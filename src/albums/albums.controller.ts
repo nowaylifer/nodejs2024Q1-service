@@ -10,7 +10,7 @@ import {
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import { UUIDParam } from 'src/decorators/uuid-param';
+import { UUIDParam } from 'src/decorators';
 import { UUID } from 'src/types';
 
 @Controller('album')

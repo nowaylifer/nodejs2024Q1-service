@@ -9,8 +9,16 @@ export class Track {
   albumId: UUID | null;
   duration: number;
 
-  constructor(dto: CreateTrackDto) {
+  constructor({
+    name,
+    artistId = null,
+    albumId = null,
+    duration,
+  }: CreateTrackDto) {
     this.id = uuid();
-    Object.assign(this, dto);
+    this.name = name;
+    this.artistId = artistId;
+    this.albumId = albumId;
+    this.duration = duration;
   }
 }

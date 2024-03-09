@@ -7,7 +7,13 @@ import { UsersService } from './users/users.service';
 import { ArtistsService } from './artists/artists.service';
 import { AlbumsService } from './albums/albums.service';
 import { TracksService } from './tracks/tracks.service';
-import { IsAlbumExistValidator, IsArtistExistValidator } from './validators';
+import {
+  IsAlbumExistValidator,
+  IsArtistExistValidator,
+  IsTrackExistValidator,
+} from './validators';
+import { FavoritesController } from './favorites/favorites.controller';
+import { FavoritesService } from './favorites/favorites.service';
 
 @Module({
   imports: [],
@@ -16,14 +22,17 @@ import { IsAlbumExistValidator, IsArtistExistValidator } from './validators';
     ArtistsController,
     AlbumsController,
     TracksController,
+    FavoritesController,
   ],
   providers: [
     UsersService,
     ArtistsService,
     AlbumsService,
     TracksService,
+    FavoritesService,
     IsAlbumExistValidator,
     IsArtistExistValidator,
+    IsTrackExistValidator,
   ],
 })
 export class AppModule {}
