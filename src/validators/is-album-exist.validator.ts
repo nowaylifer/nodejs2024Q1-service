@@ -24,7 +24,7 @@ export class IsAlbumExistValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage(args: ValidationArguments) {
-    return `Album with id ${args.value} doesn't exist`;
+    return `Album with id "${args.value}" doesn't exist`;
   }
 }
 

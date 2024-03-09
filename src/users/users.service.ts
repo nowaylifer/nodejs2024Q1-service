@@ -25,7 +25,7 @@ export class UsersService {
   findOne(id: UUID) {
     const user = this.users.get(id);
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('User was not found');
     }
     return user;
   }

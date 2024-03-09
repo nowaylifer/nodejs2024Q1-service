@@ -16,7 +16,7 @@ export class ValidateAlbumExist implements PipeTransform<UUID, UUID> {
       this.albumsService.findOne(value);
     } catch (error) {
       throw new UnprocessableEntityException(
-        `Album with id ${value} doesn't exist`,
+        `Album with id "${value}" doesn't exist`,
       );
     }
     return value;

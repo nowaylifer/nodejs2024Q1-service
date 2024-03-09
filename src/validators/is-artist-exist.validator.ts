@@ -24,7 +24,7 @@ export class IsArtistExistValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage(args: ValidationArguments) {
-    return `Artist with id ${args.value} doesn't exist`;
+    return `Artist with id "${args.value}" doesn't exist`;
   }
 }
 

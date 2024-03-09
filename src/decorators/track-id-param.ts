@@ -16,7 +16,7 @@ export class ValidateTrackExist implements PipeTransform<UUID, UUID> {
       this.tracksService.findOne(value);
     } catch (error) {
       throw new UnprocessableEntityException(
-        `Track with id ${value} doesn't exist`,
+        `Track with id "${value}" doesn't exist`,
       );
     }
 

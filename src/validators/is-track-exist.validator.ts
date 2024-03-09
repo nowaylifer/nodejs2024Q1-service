@@ -24,7 +24,7 @@ export class IsTrackExistValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage(args: ValidationArguments) {
-    return `Track with id ${args.value} doesn't exist`;
+    return `Track with id "${args.value}" doesn't exist`;
   }
 }
 

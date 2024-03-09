@@ -40,7 +40,7 @@ export class ArtistsService {
   findOne(id: UUID) {
     const artist = this.artists.get(id);
     if (!artist) {
-      throw new NotFoundException('Artist not found');
+      throw new NotFoundException('Artist was not found');
     }
     return artist;
   }

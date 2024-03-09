@@ -35,7 +35,7 @@ export class AlbumsService {
   findOne(id: UUID) {
     const album = this.albums.get(id);
     if (!album) {
-      throw new NotFoundException('Album not found');
+      throw new NotFoundException('Album was not found');
     }
     return album;
   }

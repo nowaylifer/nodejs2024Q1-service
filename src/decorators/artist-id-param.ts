@@ -16,7 +16,7 @@ export class ValidateArtistExist implements PipeTransform<UUID, UUID> {
       this.artistsService.findOne(value);
     } catch (error) {
       throw new UnprocessableEntityException(
-        `Artist with id ${value} doesn't exist`,
+        `Artist with id "${value}" doesn't exist`,
       );
     }
     return value;

@@ -32,7 +32,7 @@ export class TracksService {
   findOne(id: UUID) {
     const track = this.tracks.get(id);
     if (!track) {
-      throw new NotFoundException('Track not found');
+      throw new NotFoundException('Track was not found');
     }
     return track;
   }
