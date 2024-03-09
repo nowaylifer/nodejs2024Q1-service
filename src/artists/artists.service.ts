@@ -3,10 +3,17 @@ import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { UUID } from 'src/types';
 import { Artist } from './entities/artist.entity';
+import { TracksService } from 'src/tracks/tracks.service';
+import { AlbumsService } from 'src/albums/albums.service';
 
 @Injectable()
 export class ArtistsService {
   private artists = new Map<UUID, Artist>();
+
+  constructor(
+    private readonly tracksService: TracksService,
+    private readonly albumsService: AlbumsService,
+  ) {}
 
   create(createArtistDto: CreateArtistDto) {
     const artist = new Artist(createArtistDto);
@@ -34,5 +41,15 @@ export class ArtistsService {
   remove(id: UUID) {
     const artist = this.findOne(id);
     this.artists.delete(artist.id);
+
+    this.albumsService
+      .findAll()
+      .filter((a) => a.artistId === artist.id)
+      .forEach((a) => (a.artistId = null));
+
+    this.tracksService
+      .findAll()
+      .filter((t) => t.artistId === artist.id)
+      .forEach((t) => (t.artistId = null));
   }
 }
