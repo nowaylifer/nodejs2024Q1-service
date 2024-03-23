@@ -30,7 +30,7 @@ export class FavoritesController {
   @Delete('track/:id')
   @HttpCode(204)
   deleteTrack(@TrackIdParam('id') id: UUID) {
-    this.favoritesService.delete('track', id);
+    return this.favoritesService.delete('track', id);
   }
 
   @Post('album/:id')
@@ -42,7 +42,7 @@ export class FavoritesController {
   @Delete('album/:id')
   @HttpCode(204)
   deleteAlbum(@AlbumIdParam('id') id: UUID) {
-    this.favoritesService.delete('album', id);
+    return this.favoritesService.delete('album', id);
   }
 
   @Post('artist/:id')
@@ -54,6 +54,6 @@ export class FavoritesController {
   @Delete('artist/:id')
   @HttpCode(204)
   deleteArtist(@ArtistIdParam('id') id: UUID) {
-    this.favoritesService.delete('artist', id);
+    return this.favoritesService.delete('artist', id);
   }
 }

@@ -66,9 +66,6 @@ CREATE TABLE "_FavoritesToTrack" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_login_key" ON "User"("login");
-
--- CreateIndex
 CREATE UNIQUE INDEX "_ArtistToFavorites_AB_unique" ON "_ArtistToFavorites"("A", "B");
 
 -- CreateIndex

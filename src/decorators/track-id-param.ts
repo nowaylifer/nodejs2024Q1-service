@@ -8,12 +8,12 @@ import { UUID } from 'src/types';
 import { UUIDParam } from './uuid-param';
 
 @Injectable()
-export class ValidateTrackExist implements PipeTransform<UUID, UUID> {
+export class ValidateTrackExist implements PipeTransform<UUID, Promise<UUID>> {
   constructor(private readonly tracksService: TracksService) {}
 
-  transform(value: UUID) {
+  async transform(value: UUID) {
     try {
-      this.tracksService.findOne(value);
+      await this.tracksService.findOne(value);
     } catch (error) {
       throw new UnprocessableEntityException(
         `Track with id "${value}" doesn't exist`,
