@@ -1,53 +1,30 @@
-import {
-  Inject,
-  Injectable,
-  NotFoundException,
-  forwardRef,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'nestjs-prisma';
+import { UUID } from 'src/types';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import { UUID } from 'src/types';
-import { Track } from './entities/track.entity';
-import { FavoritesService } from 'src/favorites/favorites.service';
 
 @Injectable()
 export class TracksService {
-  private tracks = new Map<UUID, Track>();
-
-  constructor(
-    @Inject(forwardRef(() => FavoritesService))
-    private readonly favoritesService: FavoritesService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   create(createTrackDto: CreateTrackDto) {
-    const track = new Track(createTrackDto);
-    this.tracks.set(track.id, track);
-    return track;
+    return this.prisma.track.create({ data: createTrackDto });
   }
 
   findAll() {
-    return [...this.tracks.values()];
+    return this.prisma.track.findMany();
   }
 
   findOne(id: UUID) {
-    const track = this.tracks.get(id);
-    if (!track) {
-      throw new NotFoundException('Track was not found');
-    }
-    return track;
+    return this.prisma.track.findUniqueOrThrow({ where: { id } });
   }
 
   update(id: UUID, updateTrackDto: UpdateTrackDto) {
-    const track = this.findOne(id);
-    return Object.assign(track, updateTrackDto);
+    return this.prisma.track.update({ data: updateTrackDto, where: { id } });
   }
 
   remove(id: UUID) {
-    const track = this.findOne(id);
-    this.tracks.delete(track.id);
-
-    if (this.favoritesService.has('tracks', track.id)) {
-      this.favoritesService.delete('tracks', track.id);
-    }
+    return this.prisma.track.delete({ where: { id } });
   }
 }

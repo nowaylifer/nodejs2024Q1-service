@@ -8,8 +8,10 @@ model Artist {
   id     String  @id @default(uuid())
   name   String
   grammy Boolean @default(false)
-  albums Album[]
-  tracks Track[]
+
+  albums    Album[]
+  tracks    Track[]
+  favorites Favorites[]
 }
 
 model Album {
@@ -17,8 +19,10 @@ model Album {
   name     String
   year     Int
   artistId String?
-  artist   Artist? @relation(fields: [artistId], references: [id])
-  tracks   Track[]
+
+  artist    Artist?     @relation(fields: [artistId], references: [id])
+  tracks    Track[]
+  favorites Favorites[]
 }
 
 model Track {
@@ -27,24 +31,26 @@ model Track {
   artistId String?
   albumId  String?
   duration Int
-  artist   Artist? @relation(fields: [artistId], references: [id])
-  album    Album?  @relation(fields: [albumId], references: [id])
+
+  artist    Artist?     @relation(fields: [artistId], references: [id])
+  album     Album?      @relation(fields: [albumId], references: [id])
+  favorites Favorites[]
 }
 
 model User {
   id        String   @id @default(uuid())
-  login     String
+  login     String   @unique
   password  String
-  version   Int
+  version   Int      @default(1)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Favorites {
-  userId    String   @unique
-  artistIds String[]
-  albumIds  String[]
-  trackIds  String[]
+  id      Int      @id @default(1)
+  artists Artist[]
+  albums  Album[]
+  tracks  Track[]
 }
 
 generator client {

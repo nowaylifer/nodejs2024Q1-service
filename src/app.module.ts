@@ -14,9 +14,10 @@ import {
 } from './validators';
 import { FavoritesController } from './favorites/favorites.controller';
 import { FavoritesService } from './favorites/favorites.service';
+import { PrismaModule } from 'nestjs-prisma';
 
 @Module({
-  imports: [],
+  imports: [PrismaModule],
   controllers: [
     UsersController,
     ArtistsController,

@@ -1,63 +1,56 @@
-import {
-  Inject,
-  Injectable,
-  NotFoundException,
-  forwardRef,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
+import { PrismaService } from 'nestjs-prisma';
 import { UUID } from 'src/types';
-import { Favorites } from './entities/favorites.entity';
-import { TracksService } from 'src/tracks/tracks.service';
-import { AlbumsService } from 'src/albums/albums.service';
-import { ArtistsService } from 'src/artists/artists.service';
-import { asInter, capitalize } from 'src/utils';
+import { capitalize } from 'src/utils';
 
-type FavoritesType = keyof Favorites;
+type FavoritesType = 'artist' | 'album' | 'track';
 
 @Injectable()
-export class FavoritesService {
-  private favorites: Favorites = { artists: [], albums: [], tracks: [] };
-
-  constructor(
-    @Inject(forwardRef(() => TracksService))
-    private readonly tracksService: TracksService,
-
-    @Inject(forwardRef(() => AlbumsService))
-    private readonly albumsService: AlbumsService,
-
-    @Inject(forwardRef(() => ArtistsService))
-    private readonly artistsService: ArtistsService,
-  ) {}
-
-  private serviceByType = {
-    tracks: this.tracksService,
-    albums: this.albumsService,
-    artists: this.artistsService,
-  };
-
-  add(type: FavoritesType, id: UUID) {
-    const entity = this.serviceByType[type].findOne(id);
-    this.favorites[type].push(asInter(entity));
+export class FavoritesService implements OnModuleInit {
+  onModuleInit() {
+    return this.prisma.favorites.upsert({
+      where: { id: 1 },
+      create: { id: 1 },
+      update: { id: 1 },
+    });
   }
 
-  delete(type: FavoritesType, id: UUID) {
-    const entityIndex = this.favorites[type].findIndex(
-      (entity) => entity.id === id,
-    );
+  constructor(private readonly prisma: PrismaService) {}
 
-    if (entityIndex === -1) {
+  async add(type: FavoritesType, id: UUID) {
+    // @ts-expect-error dynamic access causes type error
+    await this.prisma[type].update({
+      where: { id },
+      data: { favorites: { connect: { id: 1 } } },
+    });
+  }
+
+  async delete(type: FavoritesType, id: UUID) {
+    const favoritesKey = (type + 's') as `${FavoritesType}s`;
+
+    const favorites = await this.prisma.favorites.findUnique({
+      where: { id: 1 },
+      include: { [favoritesKey]: true },
+    });
+
+    const entity = favorites[favoritesKey].find((fav) => fav.id === id);
+
+    if (!entity) {
       throw new NotFoundException(
         `${capitalize(type)} with id ${id} is not favorite`,
       );
     }
-
-    this.favorites[type].splice(entityIndex, 1);
-  }
-
-  has(type: FavoritesType, id: UUID) {
-    return !!asInter(this.favorites[type]).find((value) => value.id === id);
+    // @ts-expect-error dynamic access causes type error
+    this.prisma[type].update({
+      where: { id },
+      data: { favorites: { disconnect: { id: 1 } } },
+    });
   }
 
   findAll() {
-    return this.favorites;
+    return this.prisma.favorites.findUnique({
+      where: { id: 1 },
+      select: { artists: true, albums: true, tracks: true },
+    });
   }
 }

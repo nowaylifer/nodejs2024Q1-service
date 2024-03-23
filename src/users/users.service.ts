@@ -1,52 +1,42 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { PrismaService } from 'nestjs-prisma';
+import { UUID } from 'src/types';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
-import { UUID } from 'src/types';
-import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  private users = new Map<UUID, User>();
+  constructor(private readonly prisma: PrismaService) {}
 
   create(createUserDto: CreateUserDto) {
-    const user = new User(createUserDto);
-    this.users.set(user.id, user);
-    return user;
+    return this.prisma.user.create({ data: createUserDto });
   }
 
   findAll() {
-    return [...this.users.values()];
+    return this.prisma.user.findMany();
   }
 
-  findOne(id: UUID) {
-    const user = this.users.get(id);
-    if (!user) {
-      throw new NotFoundException('User was not found');
-    }
-    return user;
+  async findOne(id: UUID) {
+    return this.prisma.user.findUniqueOrThrow({ where: { id } });
   }
 
-  updatePassword(
+  async updatePassword(
     id: UUID,
     { oldPassword, newPassword }: UpdateUserPasswordDto,
   ) {
-    const user = this.findOne(id);
+    const user = await this.prisma.user.findUniqueOrThrow({ where: { id } });
 
     if (oldPassword !== user.password) {
       throw new ForbiddenException('Old password is wrong');
     }
 
-    user.password = newPassword;
-    user.updateVersion();
-    return user;
+    return this.prisma.user.update({
+      where: { id },
+      data: { password: newPassword, version: { increment: 1 } },
+    });
   }
 
   remove(id: UUID) {
-    const user = this.findOne(id);
-    this.users.delete(user.id);
+    return this.prisma.user.delete({ where: { id } });
   }
 }

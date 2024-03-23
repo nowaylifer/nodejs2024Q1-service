@@ -1,0 +1,34 @@
+version: '3.9'
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - '${PORT}:${PORT}'
+    depends_on:
+      - db
+    env_file:
+      - .env
+    networks:
+      - home-library-network
+
+  db:
+    image: postgres:16-alpine
+    restart: always
+    ports:
+      - '${PGPORT}:${PGPORT}'
+    env_file:
+      - .env
+    volumes:
+      - db-volume:/var/lib/postgresql/data
+    networks:
+      - home-library-network
+
+networks:
+  home-library-network:
+    driver: bridge
+
+volumes:
+  db-volume:
