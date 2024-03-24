@@ -42,7 +42,7 @@ export class FavoritesService {
   async findAll() {
     return await this.prisma.favorites.findUnique({
       where: { id: 1 },
-      include: { albums: true, artists: true, tracks: true },
+      select: { albums: true, artists: true, tracks: true },
     });
   }
 }
