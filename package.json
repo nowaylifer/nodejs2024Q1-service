@@ -25,7 +25,8 @@
     "migrate:deploy": "npx prisma migrate deploy",
     "prisma:generate": "npx prisma generate",
     "prisma:studio": "npx prisma studio",
-    "prisma:seed": "npx prisma db seed"
+    "prisma:seed": "npx prisma db seed",
+    "docker:scout": "docker scout cves local://nowaylifer/home-library:latest"
   },
   "dependencies": {
     "@nestjs/common": "^10.3.3",

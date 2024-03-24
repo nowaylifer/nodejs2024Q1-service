@@ -5,6 +5,7 @@ services:
       context: .
       target: dev
       dockerfile: Dockerfile
+    image: nowaylifer/home-library
     restart: always
     container_name: nest-api
     ports:
