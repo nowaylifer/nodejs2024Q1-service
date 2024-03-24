@@ -20,8 +20,6 @@ export class FavoritesService {
   async delete(type: FavoritesType, id: UUID) {
     const favoritesKey = (type + 's') as `${FavoritesType}s`;
 
-    await new Promise((res) => setTimeout(res, 10));
-
     const favorites = await this.prisma.favorites.findUnique({
       where: { id: 1 },
       include: { [favoritesKey]: true },
@@ -42,7 +40,6 @@ export class FavoritesService {
   }
 
   async findAll() {
-    await new Promise((res) => setTimeout(res, 10));
     return await this.prisma.favorites.findUnique({
       where: { id: 1 },
       include: { albums: true, artists: true, tracks: true },

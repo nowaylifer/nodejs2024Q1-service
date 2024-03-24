@@ -1,24 +1,29 @@
-FROM node:20-alpine AS builder
-
+FROM node:20-alpine As dev-build
 WORKDIR /app
-
 COPY package*.json ./
-COPY prisma ./prisma/
+RUN npm ci
 
-RUN npm install
 
-COPY . .
-
-RUN npm run build
-
-FROM node:20-alpine
-
+FROM node:20-alpine As dev
 WORKDIR /app
+COPY package*.json ./
+COPY --from=dev-build /app/node_modules ./node_modules
+COPY . .
+RUN npm run prisma:generate
 
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/doc  ./doc
 
-EXPOSE ${PORT}
-CMD [ "npm", "run", "start:prod" ]
+FROM node:20-alpine As prod-build
+WORKDIR /app
+COPY --chown=node:node package*.json ./
+COPY --chown=node:node --from=dev /app/node_modules ./node_modules
+COPY --chown=node:node . .
+RUN npm run build
+ENV NODE_ENV production
+RUN npm ci --only=production && npm cache clean --force
+USER node
+
+
+FROM node:20-alpine As prod
+COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
+COPY --chown=node:node --from=build /usr/src/app/dist ./dist
+CMD [ "node", "dist/main.js" ]
