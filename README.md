@@ -21,11 +21,21 @@ npm install
 
 Create .env file in the root folder based on .env.example
 
-## Running application
+## Start docker container
 
 ```
-npm start
+docker compose up -d
 ```
+
+## Setup database
+
+```
+npm run migrate:dev
+
+npm run prisma:seed
+```
+
+## Now app is running!
 
 After starting the app you can open in your browser OpenAPI documentation
 by typing http://localhost:{port}/doc/ (where {port} is the same as in .env file).

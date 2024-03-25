@@ -1,0 +1,44 @@
+version: '3.9'
+services:
+  nest-api:
+    build:
+      context: .
+      target: dev
+      dockerfile: Dockerfile
+    image: nowaylifer/home-library
+    restart: always
+    container_name: nest-api
+    ports:
+      - '${PORT}:${PORT}'
+    depends_on:
+      - db
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${PGPORT}/${POSTGRES_DB}?schema=public
+    volumes:
+      - ./src:/app/src
+    networks:
+      - app-network
+    command: npm run start:dev
+
+  db:
+    image: postgres:16-alpine
+    container_name: db
+    restart: always
+    ports:
+      - '${PGPORT}:${PGPORT}'
+    env_file:
+      - .env
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    command: ['-c', 'logging_collector=on']
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db-data:

@@ -6,14 +6,18 @@ import {
   Delete,
   Put,
   HttpCode,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { UUID } from 'src/types';
 import { UUIDParam } from 'src/decorators';
+import { TransformDataInterceptor } from 'src/interceptors/transform-data.interceptor';
+import { UserResponseDto } from './dto/user-response.dto';
 
 @Controller('user')
+@UseInterceptors(new TransformDataInterceptor(UserResponseDto))
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
