@@ -5,19 +5,27 @@ services:
       context: .
       target: dev
       dockerfile: Dockerfile
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /app
+          ignore: ['node_modules/']
+        - action: rebuild
+          path: package.json
+
     image: nowaylifer/home-library
     restart: always
     container_name: nest-api
     ports:
       - '${PORT}:${PORT}'
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     env_file:
       - .env
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${PGPORT}/${POSTGRES_DB}?schema=public
-    volumes:
-      - ./src:/app/src
     networks:
       - app-network
 
@@ -34,6 +42,13 @@ services:
       - pg-logs:/var/log/postgresql
     networks:
       - app-network
+    healthcheck:
+      test: ['CMD', 'pg_isready']
+      start_interval: 2s
+      start_period: 20s
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
   app-network:
