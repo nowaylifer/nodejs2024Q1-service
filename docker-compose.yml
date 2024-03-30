@@ -20,7 +20,6 @@ services:
       - ./src:/app/src
     networks:
       - app-network
-    command: npm run start:dev
 
   db:
     image: postgres:16-alpine
@@ -31,14 +30,15 @@ services:
     env_file:
       - .env
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - pg-data:/var/lib/postgresql/data
+      - pg-logs:/var/log/postgresql
     networks:
       - app-network
-    command: ['-c', 'logging_collector=on']
 
 networks:
   app-network:
     driver: bridge
 
 volumes:
-  db-data:
+  pg-data:
+  pg-logs:

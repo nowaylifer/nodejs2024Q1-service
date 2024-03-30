@@ -9,7 +9,8 @@ WORKDIR /app
 COPY package*.json ./
 COPY --from=dev-build /app/node_modules ./node_modules
 COPY . .
-RUN npm run prisma:generate
+RUN chmod +x ./docker-entrypoint.sh
+ENTRYPOINT [ "/app/docker-entrypoint.sh" ]
 
 
 FROM node:20-alpine As prod-build
