@@ -9,6 +9,9 @@ export class UserResponseDto implements User {
   @Exclude()
   password: string;
 
+  @Exclude()
+  refreshTokenHash: string;
+
   @Type(() => Number)
   createdAt: Date;
 

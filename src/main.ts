@@ -1,9 +1,5 @@
-import {
-  ClassSerializerInterceptor,
-  LogLevel,
-  ValidationPipe,
-} from '@nestjs/common';
-import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core';
+import { LogLevel, ValidationPipe } from '@nestjs/common';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
 import 'dotenv/config';
@@ -23,10 +19,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
-  app.useGlobalInterceptors(
-    new ClassSerializerInterceptor(app.get(Reflector)),
-    new LoggerInterceptor(),
-  );
+  app.useGlobalInterceptors(new LoggerInterceptor());
 
   app.useGlobalFilters(
     new PrismaClientExceptionFilter(app.get(HttpAdapterHost).httpAdapter),

@@ -3,6 +3,7 @@ import { PrismaService } from 'nestjs-prisma';
 import { UUID } from 'src/types';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -22,6 +23,10 @@ export class UsersService {
 
   findOneByLogin(login: string) {
     return this.prisma.user.findFirstOrThrow({ where: { login } });
+  }
+
+  update(id: UUID, data: Prisma.UserUpdateInput) {
+    return this.prisma.user.update({ where: { id }, data });
   }
 
   async updatePassword(

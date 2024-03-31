@@ -6,17 +6,14 @@ import {
   Delete,
   HttpCode,
   Put,
-  UseGuards,
 } from '@nestjs/common';
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { UUID } from 'src/types';
 import { UUIDParam } from 'src/decorators';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('artist')
-@UseGuards(JwtAuthGuard)
 export class ArtistsController {
   constructor(private readonly artistsService: ArtistsService) {}
 
