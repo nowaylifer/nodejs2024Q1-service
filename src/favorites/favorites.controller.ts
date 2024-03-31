@@ -5,13 +5,18 @@ import {
   Delete,
   HttpCode,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 import { UUID } from 'src/types';
-import { AlbumIdParam, ArtistIdParam, TrackIdParam } from 'src/decorators';
 import { SuccessMessageInterceptor } from 'src/interceptors/succes-message.interceptor';
+import { AlbumIdParam } from 'src/albums/validate-album-exist.pipe';
+import { ArtistIdParam } from 'src/artists/validate-artist-exist.pipe';
+import { TrackIdParam } from 'src/tracks/validate-track-exist.pipe';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @UseInterceptors(SuccessMessageInterceptor)
+@UseGuards(JwtAuthGuard)
 @Controller('favs')
 export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}

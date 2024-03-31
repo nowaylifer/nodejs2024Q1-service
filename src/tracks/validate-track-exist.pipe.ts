@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { TracksService } from 'src/tracks/tracks.service';
 import { UUID } from 'src/types';
-import { UUIDParam } from './uuid-param';
+import { UUIDParam } from '../decorators/uuid-param';
 
 @Injectable()
 export class ValidateTrackExist implements PipeTransform<UUID, Promise<UUID>> {

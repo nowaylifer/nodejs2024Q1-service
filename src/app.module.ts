@@ -1,39 +1,31 @@
 import { Module } from '@nestjs/common';
-import { UsersController } from './users/users.controller';
-import { ArtistsController } from './artists/artists.controller';
-import { AlbumsController } from './albums/albums.controller';
-import { TracksController } from './tracks/tracks.controller';
-import { UsersService } from './users/users.service';
-import { ArtistsService } from './artists/artists.service';
-import { AlbumsService } from './albums/albums.service';
-import { TracksService } from './tracks/tracks.service';
-import {
-  IsAlbumExistValidator,
-  IsArtistExistValidator,
-  IsTrackExistValidator,
-} from './validators';
-import { FavoritesController } from './favorites/favorites.controller';
-import { FavoritesService } from './favorites/favorites.service';
 import { PrismaModule } from 'nestjs-prisma';
+import { ConfigModule } from '@nestjs/config';
+import * as Joi from 'joi';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { TracksModule } from './tracks/tracks.module';
+import { FavoritesModule } from './favorites/favorites.module';
+import { ArtistsModule } from './artists/artists.module';
+import { AlbumsModule } from './albums/albums.module';
 
 @Module({
-  imports: [PrismaModule],
-  controllers: [
-    UsersController,
-    ArtistsController,
-    AlbumsController,
-    TracksController,
-    FavoritesController,
-  ],
-  providers: [
-    UsersService,
-    ArtistsService,
-    AlbumsService,
-    TracksService,
-    FavoritesService,
-    IsAlbumExistValidator,
-    IsArtistExistValidator,
-    IsTrackExistValidator,
+  imports: [
+    PrismaModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validationSchema: Joi.object({
+        JWT_SECRET_KEY: Joi.string().required(),
+        TOKEN_EXPIRE_TIME: Joi.string().required(),
+        CRYPT_SALT: Joi.number().required(),
+      }),
+    }),
+    UsersModule,
+    AuthModule,
+    TracksModule,
+    ArtistsModule,
+    AlbumsModule,
+    FavoritesModule,
   ],
 })
 export class AppModule {}

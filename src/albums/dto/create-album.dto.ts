@@ -6,7 +6,7 @@ import {
   IsUUID,
 } from 'class-validator';
 import { UUID } from 'src/types';
-import { IsArtistExist } from 'src/validators';
+import { IsArtistExist } from 'src/artists/is-artist-exist.validator';
 
 export class CreateAlbumDto {
   @IsString()

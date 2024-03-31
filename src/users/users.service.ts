@@ -20,6 +20,10 @@ export class UsersService {
     return this.prisma.user.findUniqueOrThrow({ where: { id } });
   }
 
+  findOneByLogin(login: string) {
+    return this.prisma.user.findFirstOrThrow({ where: { login } });
+  }
+
   async updatePassword(
     id: UUID,
     { oldPassword, newPassword }: UpdateUserPasswordDto,

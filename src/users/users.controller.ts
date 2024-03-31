@@ -7,6 +7,7 @@ import {
   Put,
   HttpCode,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -15,8 +16,10 @@ import { UUID } from 'src/types';
 import { UUIDParam } from 'src/decorators';
 import { TransformDataInterceptor } from 'src/interceptors/transform-data.interceptor';
 import { UserResponseDto } from './dto/user-response.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('user')
+@UseGuards(JwtAuthGuard)
 @UseInterceptors(new TransformDataInterceptor(UserResponseDto))
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

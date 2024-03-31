@@ -4,7 +4,7 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { UUID } from 'src/types';
-import { UUIDParam } from './uuid-param';
+import { UUIDParam } from 'src/decorators';
 import { AlbumsService } from 'src/albums/albums.service';
 
 @Injectable()

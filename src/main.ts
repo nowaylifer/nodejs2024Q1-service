@@ -18,6 +18,7 @@ const LOG_LEVEL = JSON.parse(process.env.LOG_LEVEL) as LogLevel[];
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { logger: LOG_LEVEL });
+
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
