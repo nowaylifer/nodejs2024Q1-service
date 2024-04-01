@@ -19,13 +19,19 @@ npm install
 
 ## Setup environment variables
 
-Create .env file in the root folder based on .env.example
-
-## Running application
+Create .env file in the root folder based on .env.example or just
 
 ```
-npm start
+cp .env.example .env
 ```
+
+## Start docker container in watch mode
+
+```
+docker-compose watch
+```
+
+## Now app is running!
 
 After starting the app you can open in your browser OpenAPI documentation
 by typing http://localhost:{port}/doc/ (where {port} is the same as in .env file).

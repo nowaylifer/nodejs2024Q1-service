@@ -4,21 +4,22 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { UUID } from 'src/types';
-import { UUIDParam } from './uuid-param';
+import { UUIDParam } from 'src/decorators';
 import { AlbumsService } from 'src/albums/albums.service';
 
 @Injectable()
-export class ValidateAlbumExist implements PipeTransform<UUID, UUID> {
+export class ValidateAlbumExist implements PipeTransform<UUID, Promise<UUID>> {
   constructor(private readonly albumsService: AlbumsService) {}
 
-  transform(value: UUID) {
+  async transform(value: UUID) {
     try {
-      this.albumsService.findOne(value);
+      await this.albumsService.findOne(value);
     } catch (error) {
       throw new UnprocessableEntityException(
         `Album with id "${value}" doesn't exist`,
       );
     }
+
     return value;
   }
 }

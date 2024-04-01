@@ -1,38 +1,57 @@
+import * as Joi from 'joi';
 import { Module } from '@nestjs/common';
-import { UsersController } from './users/users.controller';
-import { ArtistsController } from './artists/artists.controller';
-import { AlbumsController } from './albums/albums.controller';
-import { TracksController } from './tracks/tracks.controller';
-import { UsersService } from './users/users.service';
-import { ArtistsService } from './artists/artists.service';
-import { AlbumsService } from './albums/albums.service';
-import { TracksService } from './tracks/tracks.service';
-import {
-  IsAlbumExistValidator,
-  IsArtistExistValidator,
-  IsTrackExistValidator,
-} from './validators';
-import { FavoritesController } from './favorites/favorites.controller';
-import { FavoritesService } from './favorites/favorites.service';
+import { APP_GUARD } from '@nestjs/core';
+import { PrismaModule } from 'nestjs-prisma';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { TracksModule } from './tracks/tracks.module';
+import { LoggerModule } from './logger/logger.module';
+import { AlbumsModule } from './albums/albums.module';
+import { ArtistsModule } from './artists/artists.module';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { FavoritesModule } from './favorites/favorites.module';
+import { validateLogLevelsEnvVar } from './utils';
 
 @Module({
-  imports: [],
-  controllers: [
-    UsersController,
-    ArtistsController,
-    AlbumsController,
-    TracksController,
-    FavoritesController,
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validationSchema: Joi.object({
+        CRYPT_SALT: Joi.number().required(),
+        JWT_SECRET_KEY: Joi.string().required(),
+        TOKEN_EXPIRE_TIME: Joi.string().required(),
+        JWT_SECRET_REFRESH_KEY: Joi.string().required(),
+        TOKEN_REFRESH_EXPIRE_TIME: Joi.string().required(),
+        LOG_DIR: Joi.string().required(),
+        LOG_TO_FILE: Joi.bool().required(),
+        LOG_FILE_MAX_SIZE: Joi.number().required(),
+        LOG_LEVELS: Joi.custom(validateLogLevelsEnvVar).required(),
+      }),
+    }),
+    LoggerModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        timestamp: true,
+        logDir: configService.get('LOG_DIR'),
+        logLevels: configService.get('LOG_LEVELS'),
+        saveToFile: configService.get('LOG_TO_FILE'),
+        maxFileSize: configService.get('LOG_FILE_MAX_SIZE'),
+      }),
+    }),
+    PrismaModule.forRoot({ isGlobal: true }),
+    UsersModule,
+    AuthModule,
+    TracksModule,
+    ArtistsModule,
+    AlbumsModule,
+    FavoritesModule,
   ],
   providers: [
-    UsersService,
-    ArtistsService,
-    AlbumsService,
-    TracksService,
-    FavoritesService,
-    IsAlbumExistValidator,
-    IsArtistExistValidator,
-    IsTrackExistValidator,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
   ],
 })
 export class AppModule {}

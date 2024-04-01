@@ -6,7 +6,8 @@ import {
   IsUUID,
 } from 'class-validator';
 import { UUID } from 'src/types';
-import { IsAlbumExist, IsArtistExist } from 'src/validators';
+import { IsAlbumExist } from 'src/albums/is-album-exist.validator';
+import { IsArtistExist } from 'src/artists/is-artist-exist.validator';
 
 export class CreateTrackDto {
   @IsString()

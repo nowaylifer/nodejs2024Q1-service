@@ -12,8 +12,11 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { UUID } from 'src/types';
 import { UUIDParam } from 'src/decorators';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { UserResponseDto } from './dto/user-response.dto';
 
 @Controller('user')
+@Serialize(UserResponseDto)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
