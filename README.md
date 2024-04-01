@@ -19,20 +19,16 @@ npm install
 
 ## Setup environment variables
 
-Create .env file in the root folder based on .env.example
-
-## Start docker container
+Create .env file in the root folder based on .env.example or just
 
 ```
-docker compose up -d
+cp .env.example .env
 ```
 
-## Setup database
+## Start docker container in watch mode
 
 ```
-npm run migrate:dev
-
-npm run prisma:seed
+docker-compose watch
 ```
 
 ## Now app is running!

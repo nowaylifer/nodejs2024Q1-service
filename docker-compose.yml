@@ -10,10 +10,9 @@ services:
         - action: sync
           path: .
           target: /app
-          ignore: ['node_modules/']
+          ignore: ['node_modules/', 'logs/']
         - action: rebuild
           path: package.json
-
     image: nowaylifer/home-library
     restart: always
     container_name: nest-api
@@ -24,6 +23,8 @@ services:
         condition: service_healthy
     env_file:
       - .env
+    volumes:
+      - ./logs:/app/logs
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${PGPORT}/${POSTGRES_DB}?schema=public
     networks:
