@@ -1,12 +1,11 @@
 import { ConsoleLogger, Inject, Injectable, LogLevel } from '@nestjs/common';
-import fs from 'fs-extra';
-import path from 'path';
+import * as fs from 'fs-extra';
+import * as path from 'path';
 import { LoggerConfig, MODULE_CONFIG_TOKEN } from './logger.module-definition';
 import { logLevels } from 'src/constants';
 
 @Injectable()
 export class LoggerService extends ConsoleLogger {
-  private readonly logLevels: LogLevel[];
   private readonly maxFileSize: number;
   private readonly saveToFile: boolean;
   private readonly logDir: string;
@@ -35,7 +34,6 @@ export class LoggerService extends ConsoleLogger {
   ) {
     super(context, config);
 
-    this.logLevels = config.logLevels;
     this.saveToFile = config.saveToFile ?? false;
     this.maxFileSize = config.maxFileSize;
     this.logDir = config.logDir;
@@ -134,7 +132,7 @@ export class LoggerService extends ConsoleLogger {
   error(message: any, stack?: string, context?: string): void;
   error(message: any, ...optionalParams: [...any, string?, string?]): void;
   error(message: any, ...optionalParams: any[]) {
-    if (!this.isLogLevelEnabled('error')) {
+    if (!this.isLevelEnabled('error')) {
       return;
     }
 
@@ -151,7 +149,7 @@ export class LoggerService extends ConsoleLogger {
   log(message: any, context?: string): void;
   log(message: any, ...optionalParams: [...any, string?]): void;
   log(message: any, ...optionalParams: any[]) {
-    if (!this.isLogLevelEnabled('log')) {
+    if (!this.isLevelEnabled('log')) {
       return;
     }
 
@@ -170,7 +168,7 @@ export class LoggerService extends ConsoleLogger {
   warn(message: any, context?: string): void;
   warn(message: any, ...optionalParams: [...any, string?]): void;
   warn(message: any, ...optionalParams: any[]) {
-    if (!this.isLogLevelEnabled('warn')) {
+    if (!this.isLevelEnabled('warn')) {
       return;
     }
 
@@ -189,7 +187,7 @@ export class LoggerService extends ConsoleLogger {
   debug(message: any, context?: string): void;
   debug(message: any, ...optionalParams: [...any, string?]): void;
   debug(message: any, ...optionalParams: any[]) {
-    if (!this.isLogLevelEnabled('debug')) {
+    if (!this.isLevelEnabled('debug')) {
       return;
     }
 
@@ -208,7 +206,7 @@ export class LoggerService extends ConsoleLogger {
   verbose(message: any, context?: string): void;
   verbose(message: any, ...optionalParams: [...any, string?]): void;
   verbose(message: any, ...optionalParams: any[]) {
-    if (!this.isLogLevelEnabled('verbose')) {
+    if (!this.isLevelEnabled('verbose')) {
       return;
     }
 
@@ -227,7 +225,7 @@ export class LoggerService extends ConsoleLogger {
   fatal(message: any, context?: string): void;
   fatal(message: any, ...optionalParams: [...any, string?]): void;
   fatal(message: any, ...optionalParams: any[]) {
-    if (!this.isLogLevelEnabled('fatal')) {
+    if (!this.isLevelEnabled('fatal')) {
       return;
     }
 
@@ -241,10 +239,6 @@ export class LoggerService extends ConsoleLogger {
     ]);
 
     this.saveLogToFile(messages, 'fatal', context);
-  }
-
-  private isLogLevelEnabled(level: LogLevel) {
-    return this.logLevels.includes(level);
   }
 
   getContextAndMessagesToSave(args: unknown[]) {
